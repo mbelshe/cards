@@ -1,10 +1,39 @@
 // Ashley's Card Shuffler
 
 var suits = ["H", "S", "D", "C"];
-var ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+var ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"];
 
 function print(str) {
   document.getElementById("outputdiv").innerHTML += str + "<br>";
+}
+
+// Take something like "2H" and convert to "two_of_hearts.png"
+function cardToImgName(card) {
+  var rank = card[0];
+  var suit = card[1];
+  var rankNames = {
+     "2": "2",
+     "3": "3",
+     "4": "4",
+     "5": "5",
+     "6": "6",
+     "7": "7",
+     "8": "8",
+     "9": "9",
+     "T": "10",
+     "J": "jack",
+     "Q": "queen",
+     "K": "king",
+     "A": "ace" 
+  };
+  var suitNames = {
+     "H": "hearts",
+     "C": "clubs",
+     "S": "spades",
+     "D": "diamonds"
+  };
+
+  return "img/" + rankNames[rank] + "_of_" + suitNames[suit] + ".png";
 }
 
 function newDeck() {
@@ -68,7 +97,16 @@ function shuffleDeck(deckToSort) {
 }
 
 var deck = newDeck();
-print(deck.length);
-print(deck);
-print(pickRandomCard(deck));
-print(shuffleDeck(deck));
+deck = shuffleDeck(deck);
+var myCard = deck[pickRandomCard(deck)];
+print(myCard);
+var cardImage = cardToImgName(myCard);
+print(cardImage);
+
+for (var i = 0; i < 5; i++) {
+  var myCard = deck[pickRandomCard(deck)];
+  var cardImage = cardToImgName(myCard);
+  var elementName = "randomcard" + (i+1);
+  document.getElementById(elementName).src = cardImage;
+}
+
