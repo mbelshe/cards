@@ -70,10 +70,24 @@ function Deck() {
 
 var deck = new Deck();
 deck.shuffle();
-for (var i = 0; i < 10; i++) {
-  var myCard = deck.drawOneCard();
-  var cardImage = cardToImgName(myCard);
-  var elementName = "randomcard" + (i+1);
-  document.getElementById(elementName).src = cardImage;
-}
-print(deck.numberOfCards());
+
+$(document).ready(function() {
+  $("#grabcard").click(function() {
+    var myCard = deck.drawOneCard();
+    var cardImage = cardToImgName(myCard);
+
+    var newImg = document.createElement("img");
+    newImg.src = cardImage;
+    newImg.className = "smallcard";
+    $("#playerHand").append(newImg);
+
+    $(newImg).click(function() {
+      if ($(this).hasClass("selectedcard")) {
+        $(this).removeClass("selectedcard");
+      } else {
+        $(this).addClass("selectedcard");
+      }
+    });
+  });
+
+});

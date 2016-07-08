@@ -8,21 +8,18 @@
     .smallcard {
       height: 100px;
     }
+    .selectedcard {
+      border: 2px solid green;
+    }
   </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
 </head>
 <body>
   <H1>Card Shuffler</H1>
 
-  <img class="smallcard" id="randomcard1">
-  <img class="smallcard" id="randomcard2">
-  <img class="smallcard" id="randomcard3">
-  <img class="smallcard" id="randomcard4">
-  <img class="smallcard" id="randomcard5">
-  <img class="smallcard" id="randomcard6">
-  <img class="smallcard" id="randomcard7">
-  <img class="smallcard" id="randomcard8">
-  <img class="smallcard" id="randomcard9">
-  <img class="smallcard" id="randomcard10">
+  <button id="grabcard">Grab a card</button>
+
+  <div id="playerHand"></div>
 
   <div id="outputdiv"></div>
 </body>
