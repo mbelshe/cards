@@ -1,6 +1,7 @@
 // Ashley's Card Shuffler
 
-var suits = ["H", "S", "D", "C"];
+// These are sorted from lowest to highest suit & rank.
+var suits = ["C", "D", "H", "S"];
 var ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"];
 
 function print(str) {
@@ -26,7 +27,7 @@ function cardToImgName(card) {
 // The Deck Object manages a deck of cards.
 //
 function Deck() {
-  this.initializeDeck = function() {
+  this.initialize = function() {
     // Fill the deck with a sorted list of cards.
     this.cards = new Array();
     for (var suit in suits) {
@@ -64,29 +65,70 @@ function Deck() {
     return this.cards.length;
   }
 
-  this.initializeDeck();
+  this.initialize();
+};
+
+//
+// A Hand Object is a hand of cards
+//
+function Hand(deck) {
+  this.handSize = 5;
+
+  this.deck = deck;
+  this.cards = [];
+
+  // Initialize the hand with some cards from a deck
+  this.initialize = function () {
+    for (var index = 0; index < this.handSize; ++index) {
+      this.cards.push(this.deck.drawOneCard());
+    }
+  };
+
+  // Sort our cards
+  this.sort = function () {
+    this.cards.sort(function(card1, card2) {
+      var rank1 = ranks.findIndex(function(rank) { return rank == card1[0]; });
+      var rank2 = ranks.findIndex(function(rank) { return rank == card2[0]; });
+
+      // First, look at the card rank.  'A' is always sorted higher than 'K'.
+      if (rank1 != rank2) {
+        return rank2 - rank1;
+      }
+
+      // It was the same rank.  Instead compare by suit.
+      var suit1 = suits.findIndex(function(suit) { return suit == card1[1]; });
+      var suit2 = suits.findIndex(function(suit) { return suit == card2[1]; });
+      return suit2 - suit1;
+    });
+  };
+
+  this.initialize();
+  this.sort();
 };
 
 
 var deck = new Deck();
 deck.shuffle();
+var hand;
 
 $(document).ready(function() {
-  $("#grabcard").click(function() {
-    var myCard = deck.drawOneCard();
-    var cardImage = cardToImgName(myCard);
+  $("#dealbutton").click(function() {
+    hand = new Hand(deck);
 
-    var newImg = document.createElement("img");
-    newImg.src = cardImage;
-    newImg.className = "smallcard";
-    $("#playerHand").append(newImg);
+    hand.cards.forEach(function(card) {
+      var cardImage = cardToImgName(card);
+      var newImg = document.createElement("img");
+      newImg.src = cardImage;
+      newImg.className = "smallcard";
+      $("#playerHand").append(newImg);
 
-    $(newImg).click(function() {
-      if ($(this).hasClass("selectedcard")) {
-        $(this).removeClass("selectedcard");
-      } else {
-        $(this).addClass("selectedcard");
-      }
+      $(newImg).click(function() {
+        if ($(this).hasClass("selectedcard")) {
+          $(this).removeClass("selectedcard");
+        } else {
+          $(this).addClass("selectedcard");
+        }
+      });
     });
   });
 
