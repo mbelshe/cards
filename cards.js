@@ -102,23 +102,55 @@ function Hand(deck) {
     });
   };
 
+  // Draw a new card for the card at position |index| in our hand.
+  this.draw = function(index) {
+    this.cards[index] = this.deck.drawOneCard();
+    return this.cards[index];
+  };
+
   this.initialize();
   this.sort();
 };
 
 
-var deck = new Deck();
-deck.shuffle();
+var deck;
 var hand;
 
+function shuffleDeck() {
+  deck = new Deck();
+  deck.shuffle();
+}
+
+// On startup, hide the action button.
+$("#actionbutton").hide();
+
 $(document).ready(function() {
+  $("#actionbutton").click(function() {
+    var selectedCards = $(".selectedcard");
+    for (var index = 0; index < selectedCards.length; ++index) {
+      console.log(selectedCards[index].id);
+      var newCard = hand.draw(index);
+      var cardImage = cardToImgName(newCard);
+      selectedCards[index].src = cardImage;
+    }
+  });
+
   $("#dealbutton").click(function() {
+
+    // Clear the current hand
+    $("#playerHand").html("");
+    shuffleDeck();
+
+    // Display the action button
+    $("#actionbutton").show();
+
     hand = new Hand(deck);
 
-    hand.cards.forEach(function(card) {
+    hand.cards.forEach(function(card, index) {
       var cardImage = cardToImgName(card);
       var newImg = document.createElement("img");
       newImg.src = cardImage;
+      newImg.id = index;
       newImg.className = "smallcard";
       $("#playerHand").append(newImg);
 
