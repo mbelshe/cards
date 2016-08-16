@@ -108,6 +108,54 @@ function Hand(deck) {
     return this.cards[index];
   };
 
+  // Evaluate the hand for best poker suit.
+  this.evaluate = function() {
+    // We have 5 cards in the hand.
+    // They are sorted by "rank"
+    // We need to evaluate if there are any of the following hands:
+    //    a) Pair
+    //    b) Two-Pair
+    //    c) Full House
+    //    d) Three-of-a-kind
+    //    e) Straight
+    //    f) Flush
+    //    g) Royal Flush
+    //    h) 4-of-a-kind
+
+    // Look for 2-of-a-kind, 3-of-a-kind, 4-of-a-kind, etc.
+    // Returns null if there is not a match of N-of-a-kind.
+    // Otherwise, returns the highest card of that type.
+    function ofAKind(cards, number) {
+      var maxCountOfAKind = 1;
+      var countOfAKind = 1;
+      var lastCard = cards[0];
+      for (var index = 1; index < cards.length; ++index) {
+        if (cards[index][0] == lastCard[0]) {
+          countOfAKind++;
+        } else {
+          if (countOfAKind > maxCountOfAKind) {
+            maxCountOfAKind = countOfAKind;
+          }
+          countOfAKind = 1;
+        }
+      }
+      return maxCountOfAKind >= number;
+    }
+
+    function isFlush() {
+      return false;
+    }
+
+    function isStraight() {
+      return false;
+    }
+
+    if (ofAKind(this.cards, 2)) {
+      return "2 of a kind!";
+    }
+    return null;
+  }
+
   this.initialize();
   this.sort();
 };
@@ -145,6 +193,10 @@ $(document).ready(function() {
     $("#actionbutton").show();
 
     hand = new Hand(deck);
+    var bestHand = hand.evaluate();
+    if (bestHand) {
+      print(bestHand);
+    }
 
     hand.cards.forEach(function(card, index) {
       var cardImage = cardToImgName(card);
